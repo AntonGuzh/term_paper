@@ -1,0 +1,132 @@
+% Это основная команда, с которой начинается любой \LaTeX-файл. Она отвечает за тип документа, с которым связаны основные правил оформления текста.
+\documentclass[allcolors=black]{article}
+
+% Здесь идет преамбула документа, тут пишутся команды, которые настраивают LaTeX окружение, подключаете внешние пакеты, определяете свои команды и окружения. В данном случае я это делаю в отдельных файлах, а тут подключаю эти файлы.
+
+% Здесь я подключаю разные стилевые пакеты. Например возможности набирать особые символы или возможность компилировать русский текст. Подробное описание внутри.
+\usepackage{tex/packages}
+
+% Здесь я определяю разные окружения, например, теоремы, определения, замечания и так далее. У этих окружений разные стили оформления, кроме того, эти окружения могут быть нумерованными или нет. Все подробно объяснено внутри.
+\usepackage{tex/environments}
+
+% Здесь я определяю разные команды, которых нет в LaTeX, но мне нужны, например, команда \tr для обозначения следа матрицы. Или я переопределяю LaTeX команды, которые работают не так, как мне хотелось бы. Типичный пример мнимая и вещественная часть комплексного числа \Im, \Re. В оригинале они выглядят не так, как мы привыкли. Кроме того, \Im еще используется и для обозначения образа линейного отображения. Подробнее описано внутри.
+\usepackage{tex/commands}
+
+% Потребуется для вставки картинки подписи
+% \usepackage{graphicx}
+
+% Пакет для титульника проекта
+\usepackage{tex/titlepage}
+
+% Здесь задаем параметры титульной страницы
+%\setUDK{192.168.1.1}
+% Выбрать одно из двух
+%\setToResearch
+\setToProgram
+
+\setTitle{\VAR{model.user.title}}
+
+% Выбрать одно из трех:
+% КТ1 -- \setStageOne
+% КТ2 -- \setStageTwo
+% Финальная версия -- \setStageFinal
+\setStageOne
+%\setStageTwo
+%\setStageFinal
+
+\setGroup{\VAR{model.user.group}}
+\setStudent{\VAR{model.user.student}}
+\setStudentDate{\VAR{model.user.date.strftime('%d.%m.%Y')}}
+\setAdvisor{\VAR{model.user.advisor}}
+\setAdvisorTitle{\VAR{model.user.advisor_title}}
+\setAdvisorAffiliation{\VAR{model.user.advisor_affiliation}}
+\setAdvisorDate{}
+\setGrade{}
+\setYear{\VAR{model.user.year}}
+
+
+% С этого момента начинается текст документа
+\begin{document}
+
+% Эта команда создает титульную страницу
+\makeTitlePage
+
+% Здесь будет автоматически генерироваться содержание документа
+\tableofcontents
+
+\section{Основные термины и определения}
+\begin{itemize}
+    \BLOCK{ for item in model.terms: }
+    \item \textit{\VAR{item.name}} --- \VAR{item.text}
+    \BLOCK{ endfor }
+\end{itemize}
+
+\section{Введение}
+\VAR{model.intro}
+
+\section{Обзор и сравнительный анализ аналогов}
+
+\BLOCK{ for item in model.analogs_review: }
+\subsubsection*{\VAR{item.name}}
+\VAR{item.text}
+\BLOCK{ endfor }
+
+\subsection*{Итоги}
+\VAR{model.analogs_summary}
+
+\section{Обзор и сравнительный анализ аналогов}
+
+\BLOCK{ for item in model.sources_review: }
+\subsubsection*{\VAR{item.name}}
+\VAR{item.text}
+\BLOCK{ endfor }
+
+\subsection*{Итоги}
+\VAR{model.sources_summary}
+
+\section{Описание функциональных и нефункциональных требований к программному проекту}
+\BLOCK{ for req in model.func_req: }
+\paragraph{\VAR{req.name}}
+\begin{enumerate}
+    \BLOCK{ for step in req.items: }
+    \item \VAR{step}
+    \BLOCK{ endfor }
+\end{enumerate}
+\BLOCK{ endfor }
+
+\paragraph{Нефункциональные требования}
+\begin{itemize}
+    \BLOCK{ for item in model.non_func_req: }
+    \item \VAR{item}
+    \BLOCK{ endfor }
+\end{itemize}
+
+
+\section{Выбор стека технологий}
+\begin{enumerate}
+    \BLOCK{ for item in model.technologies: }
+    \item \textit{\VAR{item.name}} --- \VAR{item.text}
+    \BLOCK{ endfor }
+\end{enumerate}
+
+
+\section{Архитектура проекта}
+\VAR{model.architecture}
+
+\section{Промежуточные результаты}
+\BLOCK{for item in model.intermediate_results:}
+\VAR{item}
+
+\BLOCK{ endfor }
+
+
+\section{Календарный план выполнения проекта}
+\begin{tabular}{|p{12cm}|p{3cm}|}\hline
+    \textbf{Событие} & \textbf{Дедлайн} \\\hline
+    \BLOCK{for item in model.plan:}
+    \VAR{item.action} & \VAR{item.date.strftime('%d.%m.%Y')}\\\hline
+    \BLOCK{ endfor }
+\end{tabular}
+
+
+\end{document}

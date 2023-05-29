@@ -1,0 +1,103 @@
+% Это основная команда, с которой начинается любой \LaTeX-файл. Она отвечает за тип документа, с которым связаны основные правил оформления текста.
+\documentclass[allcolors=black]{article}
+
+% Здесь идет преамбула документа, тут пишутся команды, которые настраивают LaTeX окружение, подключаете внешние пакеты, определяете свои команды и окружения. В данном случае я это делаю в отдельных файлах, а тут подключаю эти файлы.
+
+% Здесь я подключаю разные стилевые пакеты. Например возможности набирать особые символы или возможность компилировать русский текст. Подробное описание внутри.
+\usepackage{tex/packages}
+
+% Здесь я определяю разные окружения, например, теоремы, определения, замечания и так далее. У этих окружений разные стили оформления, кроме того, эти окружения могут быть нумерованными или нет. Все подробно объяснено внутри.
+\usepackage{tex/environments}
+
+% Здесь я определяю разные команды, которых нет в LaTeX, но мне нужны, например, команда \tr для обозначения следа матрицы. Или я переопределяю LaTeX команды, которые работают не так, как мне хотелось бы. Типичный пример мнимая и вещественная часть комплексного числа \Im, \Re. В оригинале они выглядят не так, как мы привыкли. Кроме того, \Im еще используется и для обозначения образа линейного отображения. Подробнее описано внутри.
+\usepackage{tex/commands}
+
+% Потребуется для вставки картинки подписи
+% \usepackage{graphicx}
+
+% Пакет для титульника проекта
+\usepackage{tex/titlepage}
+
+\setToRo
+
+\setTitle{\VAR{model.user.title}}
+
+\setGroup{\VAR{model.user.group}}
+\setStudent{\VAR{model.user.student}}
+\setStudentDate{\VAR{model.user.date.strftime('%d.%m.%Y')}}
+\setAdvisor{\VAR{model.user.advisor}}
+\setAdvisorTitle{\VAR{model.user.advisor_title}}
+\setAdvisorAffiliation{\VAR{model.user.advisor_affiliation}}
+\setAdvisorDate{}
+\setGrade{}
+\setYear{\VAR{model.user.year}}
+
+
+% С этого момента начинается текст документа
+\begin{document}
+
+% Эта команда создает титульную страницу
+\makeTitlePage
+
+% Здесь будет автоматически генерироваться содержание документа
+\tableofcontents
+
+\section{Назначение программы}
+\subsection{Функциональное назначение программы}
+\VAR{model.func_purpose}
+
+\subsection{Эксплуатационное назначение программы}
+\VAR{model.use_purpose}
+
+\subsection{Состав функций}
+\begin{itemize}
+    \BLOCK{ for item in model.func_desc: }
+    \item \textit{\VAR{item.name}} --- \VAR{item.text}
+    \BLOCK{ endfor }
+\end{itemize}
+
+\section{Условия выполнения программы}
+\subsection{Минимальный состав аппаратных средств}
+\begin{itemize}
+    \BLOCK{ for item in model.pc_cond: }
+    \item \VAR{item}
+    \BLOCK{ endfor }
+\end{itemize}
+
+\subsection{Минимальный состав программных средств}
+\begin{itemize}
+    \BLOCK{ for item in model.prog_cond: }
+    \item \VAR{item}
+    \BLOCK{ endfor }
+\end{itemize}
+
+\subsection{Требования к персоналу (пользователю)}
+\begin{itemize}
+    \BLOCK{ for item in model.user_cond: }
+    \item \VAR{item}
+    \BLOCK{ endfor }
+\end{itemize}
+
+\section{Выполнение программы}
+\subsection{Загрузка и запуск программы}
+\VAR{model.program_start}
+
+\subsection{Выполнение программы}
+\begin{itemize}
+    \BLOCK{ for item in model.func_work: }
+    \item \textit{\VAR{item.name}} --- \VAR{item.text}
+    \BLOCK{ endfor }
+\end{itemize}
+    
+\subsection{Завершение работы программы}
+\VAR{model.program_end}
+    
+\section{Сообщения  оператору}
+\BLOCK{ for msg in model.msgs: }
+\subsection{\VAR{msg.name}}
+\paragraph{Причина. } \VAR{msg.items[0]}
+\paragraph{Действия программы. } \VAR{msg.items[1]}
+\paragraph{Действия оператора. } \VAR{msg.items[2]}
+\BLOCK{ endfor }
+
+\end{document}

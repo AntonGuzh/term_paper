@@ -1,0 +1,137 @@
+% Это основная команда, с которой начинается любой \LaTeX-файл. Она отвечает за тип документа, с которым связаны основные правил оформления текста.
+\documentclass[allcolors=black]{article}
+
+% Здесь идет преамбула документа, тут пишутся команды, которые настраивают LaTeX окружение, подключаете внешние пакеты, определяете свои команды и окружения. В данном случае я это делаю в отдельных файлах, а тут подключаю эти файлы.
+
+% Здесь я подключаю разные стилевые пакеты. Например возможности набирать особые символы или возможность компилировать русский текст. Подробное описание внутри.
+\usepackage{tex/packages}
+
+% Здесь я определяю разные окружения, например, теоремы, определения, замечания и так далее. У этих окружений разные стили оформления, кроме того, эти окружения могут быть нумерованными или нет. Все подробно объяснено внутри.
+\usepackage{tex/environments}
+
+% Здесь я определяю разные команды, которых нет в LaTeX, но мне нужны, например, команда \tr для обозначения следа матрицы. Или я переопределяю LaTeX команды, которые работают не так, как мне хотелось бы. Типичный пример мнимая и вещественная часть комплексного числа \Im, \Re. В оригинале они выглядят не так, как мы привыкли. Кроме того, \Im еще используется и для обозначения образа линейного отображения. Подробнее описано внутри.
+\usepackage{tex/commands}
+
+% Потребуется для вставки картинки подписи
+% \usepackage{graphicx}
+
+% Пакет для титульника проекта
+\usepackage{tex/titlepage}
+
+% Здесь задаем параметры титульной страницы
+%\setUDK{192.168.1.1}
+% Выбрать одно из двух
+%\setToResearch
+\setToPmi
+
+\setTitle{\VAR{model.user.title}}
+
+\setGroup{\VAR{model.user.group}}
+\setStudent{\VAR{model.user.student}}
+\setStudentDate{\VAR{model.user.date.strftime('%d.%m.%Y')}}
+\setAdvisor{\VAR{model.user.advisor}}
+\setAdvisorTitle{\VAR{model.user.advisor_title}}
+\setAdvisorAffiliation{\VAR{model.user.advisor_affiliation}}
+\setAdvisorDate{}
+\setGrade{}
+\setYear{\VAR{model.user.year}}
+
+
+% С этого момента начинается текст документа
+\begin{document}
+
+% Эта команда создает титульную страницу
+\makeTitlePage
+
+% Здесь будет автоматически генерироваться содержание документа
+\tableofcontents
+
+    \section{Объект испытаний}
+    \subsection{Наименование испытуемой программы}
+    Наименовыние --- <<\VAR{model.user.title}>>
+    
+    \subsection{Область применения испытуемой программы}
+    \VAR{model.space}
+    
+    \section{Цель испытаний}
+    \VAR{model.goal}
+    
+    \section{Требования к программе}
+    \begin{enumerate}
+        \BLOCK{ for item in model.prog_req: }
+        \item \VAR{item}
+        \BLOCK{ endfor }
+    \end{enumerate}
+
+
+    \section{Требования к программной документации, предъявляемой на испытания}
+    \begin{enumerate}
+        \BLOCK{ for item in model.doc_req: }
+        \item \VAR{item}
+        \BLOCK{ endfor }
+    \end{enumerate}
+
+    \section{Средства и порядок испытаний}
+    \subsection{Технические средства, используемые во время испытаний}
+    \begin{enumerate}
+        \BLOCK{ for item in model.pc_source: }
+        \item \VAR{item}
+        \BLOCK{ endfor }
+    \end{enumerate}
+
+    \subsection{Программные средства, используемые во время испытаний}
+    \begin{enumerate}
+        \BLOCK{ for item in model.prog_source: }
+        \item \VAR{item}
+        \BLOCK{ endfor }
+    \end{enumerate}
+    
+    \subsection{Порядок проведения испытаний}
+    \begin{itemize}
+        \BLOCK{ for i in range(model.steps|length): }
+        \item \VAR{i + 1} этап --- \VAR{model.steps[i].name}
+        \BLOCK{ endfor }
+    \end{itemize}
+
+    \BLOCK{ for item in model.steps: }
+    \subsubsection{\VAR{item.name}}
+    \BLOCK{ for line in item.items: }
+    \VAR{line}
+
+    \BLOCK{ endfor }
+    \BLOCK{ endfor }
+
+    \subsection{Количественные и качественные характеристики, подлежащие оценке}
+    \subsubsection{Количественные характеристики, подлежащие оценке}
+    \begin{itemize}
+        \BLOCK{ for item in model.quantity: }
+        \item \textit{\VAR{item.name}} --- \VAR{item.text}
+        \BLOCK{ endfor }
+    \end{itemize}
+
+    \subsubsection{Качественные характеристики, подлежащие оценке}
+    \begin{itemize}
+        \BLOCK{ for item in model.quality: }
+        \item \textit{\VAR{item.name}} --- \VAR{item.text}
+        \BLOCK{ endfor }
+    \end{itemize}
+
+    \subsection{Условия проведения испытаний}
+    \BLOCK{ for item in model.conditions: }
+    \subsubsection{\VAR{item.name}}
+    \BLOCK{ for line in item.items: }
+    \VAR{line}
+
+    \BLOCK{ endfor }
+    \BLOCK{ endfor }
+
+    \section{Методы проведения испытаний }
+    \BLOCK{ for item in model.methods: }
+    \subsection{\VAR{item.name}}
+    \BLOCK{ for line in item.items: }
+    \VAR{line}
+
+    \BLOCK{ endfor }
+    \BLOCK{ endfor }
+
+\end{document}
