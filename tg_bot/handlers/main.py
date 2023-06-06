@@ -15,7 +15,6 @@ def check_enter(handler):
             msg.text = await base_parser(msg.text)
             await handler(msg, state)
         except BaseException as e:
-            await msg.answer(str(e))
             await msg.answer(main.error)
 
     return checker

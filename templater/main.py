@@ -30,12 +30,3 @@ async def compile_tex(model: dict, file: str):
     if code:
         return None
     return 'res.pdf'
-
-
-def clear():
-    for file in os.listdir('../'):
-        if file.startswith('cv_res') and not file.endswith('.pdf'):
-            os.remove(file)
-    for file in os.listdir('../'):
-        if file.endswith('.png') or file.endswith('.jpg'):
-            os.remove(file)
